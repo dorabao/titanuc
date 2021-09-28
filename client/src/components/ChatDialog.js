@@ -5,7 +5,6 @@ import ChatMsg from '@mui-treasury/mockup/brands/messenger/ChatMsg';
 const ChatDialog = ({messages, myId}) => {
   if (!messages) return null;
   const chatMsgs = messages.map((m) => {
-    console.log(m)
     let m2 = []
     if (typeof m.message === "string") {
       m2.push(m.message)

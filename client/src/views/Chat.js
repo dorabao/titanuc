@@ -97,7 +97,6 @@ const theme = responsiveFontSizes(
 
 const Chat = () => {
   const { user } = useAuth0();
-
   const [users, setUsers] = useState({});
   const [selectedUser, setSelectedUser] = useState();
   const [stream, setStream] = useState();
@@ -105,7 +104,7 @@ const Chat = () => {
   const [caller, setCaller] = useState("");
   const [farEnd, setFarEnd] = useState("")
   const [farEndSignal, setFarEndSignal] = useState();
-  const [callingFriend, setCallingFriend] = useState(false);
+  const [callingPeer, setCallingPeer] = useState(false);
   const [callAccepted, setCallAccepted] = useState(false);
   const [connectionAccepted, setConnectionAccepted] = useState(false);
   const [callRejected, setCallRejected] = useState(false);
@@ -113,6 +112,7 @@ const Chat = () => {
   const [videoMuted, setVideoMuted] = useState(false)
   const [peerMessages, setPeerMessages] = useState([]);
   const [profileOpened, setProfileOpened] = useState(false);
+  const [unreadMessage, setUnreadMessage] = useState();
 
   const userVideo = useRef();
   const partnerVideo = useRef();
@@ -125,18 +125,15 @@ const Chat = () => {
       socket.current.emit("addUser", user)
     })
     socket.current.on("allUsers", (users) => {
-      console.log("allusers")
       console.log(users)
       setUsers(users);
     });
     socket.current.on("hey", (data) => {
-      console.log(`received hey from ${data.from}`)
       setReceivingCall(true)
       //ringtoneSound.play();
       setCaller(data.from)
     })
     socket.current.on("hey2", data => {
-      console.log(`received hey2 from ${data.from.email}`)
       setFarEnd(data.from)
       setFarEndSignal(data.signal)
       acceptPeerConnection(data.from, data.signal)
@@ -145,13 +142,9 @@ const Chat = () => {
 
    useEffect(() => {
     if (myPeer.current) {
-      console.log("adding stream")
       myPeer.current.addStream(stream)
       myPeer.current.on("stream", stream => {
-        console.log("receiving stream from caller")
         if (partnerVideo.current) {
-          console.log('set partner video srcObj')
-          console.log(stream)
           partnerVideo.current.srcObject = stream;
         }
       })
@@ -186,8 +179,11 @@ const Chat = () => {
       });
   });
 
+  const handleConnect = () => {
+    connectPeer(selectedUser.email);
+  }
+
   const connectPeer = (id) => {
-    console.log("connectPeer was called")
     const peer = new Peer({
       initiator: true,
       trickle: false,
@@ -234,23 +230,21 @@ const Chat = () => {
     myPeer.current=peer;
 
     peer.on("signal", data => {
-      console.log(data)
-      console.log("peer was signaled.")
       socket.current.emit("connectUser", { userToConnect: id, signalData: data, from: user })
     })
 
     peer.on('data', data => {
-      console.log('data: ' + data)
+      if (selectedUser == null || selectedUser.email !== users[id].email) {
+        setUnreadMessage(users[id])
+      }
       setPeerMessages(prevMsgs => [...prevMsgs, {from: users[id], to: user, message: data}])
     })
 
     peer.on('error', (err)=>{
-      console.log(`error is ${err}`)
       handleEndCall()
     })
 
     socket.current.on("connectionAccepted", signal => {
-      console.log("connection was accepted.")
       setConnectionAccepted(true);
       peer.signal(signal);
     })
@@ -258,6 +252,10 @@ const Chat = () => {
     socket.current.on('close', ()=>{
       window.location.reload()
     })
+  }
+
+  const handleOpenVideoCall = () => {
+    callPeer(selectedUser.email);
   }
 
   const callPeer = (id) => {
@@ -273,7 +271,7 @@ const Chat = () => {
       })
       navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
         setStream(stream);
-        setCallingFriend(true)
+        setCallingPeer(true)
         setCaller(id) // todo is this right?
         if (userVideo.current) {
           userVideo.current.srcObject = stream;
@@ -290,10 +288,8 @@ const Chat = () => {
   const acceptPeerConnection = (from, peerSignal) => {
     setConnectionAccepted(true)
     if (myPeer.current) {
-      console.log("acceptPeerConnection1")
       myPeer.current.signal(peerSignal);
     } else {
-      console.log("acceptPeerConnection2")
       const peer = new Peer({
         initiator: false,
         trickle: false,
@@ -304,8 +300,9 @@ const Chat = () => {
       })
 
       peer.on('data', data => {
-        console.log('data: ' + data)
-        console.log(from)
+        if (selectedUser == null || selectedUser.email !== from.email) {
+          setUnreadMessage(from)
+        }
         setPeerMessages(prevMsgs => [...prevMsgs, {from, to: user, message: data}])
       })
 
@@ -344,14 +341,6 @@ const Chat = () => {
     window.location.reload()
   }
 
-  const handleOpenVideoCall = () => {
-    callPeer(selectedUser.email);
-  }
-
-  const handleConnect = () => {
-    connectPeer(selectedUser.email);
-  }
-
   const handleEndCall = () => {
     myPeer.current.destroy()
     socket.current.emit('close',{to:caller})
@@ -361,13 +350,14 @@ const Chat = () => {
 
   const handleUserSelected = (event, email) => {
     let selectedUser = users[email];
-    console.log(`selected user's email: ${selectedUser.email}`)
     setSelectedUser(selectedUser);
+    if (selectedUser != null && unreadMessage != null && selectedUser.email === unreadMessage.email) {
+      setUnreadMessage(null);
+    }
   }
 
   const handleOnSend = (event, message) => {
     myPeer.current.send(message)
-    console.log(`send ${message}`)
     setPeerMessages(prevMsgs => [...prevMsgs, {from: user, to: selectedUser, message}])
   }
 
@@ -375,12 +365,12 @@ const Chat = () => {
     setProfileOpened(false)
   }
 
-  const handleProfileOpen= () => {
+  const handleProfileOpen = () => {
     setProfileOpened(true)
   }
 
   function renderCall() {
-    return callingFriend || callAccepted ? 'block' : 'none'
+    return callingPeer || callAccepted ? 'block' : 'none'
   }
 
   const toggleMuteAudio = () => {
@@ -397,10 +387,10 @@ const Chat = () => {
     }
   }
 
-  const removeKey = (key, {[key]: _, ...rest}) => rest;
+  const removeByKey = (key, {[key]: _, ...rest}) => rest;
 
   function usersExceptSelf() {
-      let others = removeKey(user.email, users)
+      let others = removeByKey(user.email, users)
       return Object.values(others)
   }
 
@@ -427,14 +417,12 @@ const Chat = () => {
 
   let UserVideo;
   if (stream) {
-    console.log('load UserVideo component')
     UserVideo = (
       <video className="userVideo" playsInline muted ref={userVideo} autoPlay />)
   }
 
   let PartnerVideo;
   if (callAccepted) {
-    console.log('load Partner Video component')
     PartnerVideo = (
       <video className="partnerVideo cover" playsInline ref={partnerVideo} autoPlay />
     );
@@ -516,7 +504,7 @@ const Chat = () => {
                   </Box>
                 </>
               )}
-              <ChatList users={usersExceptSelf()} concise={sidebar.primarySidebar.collapsed} onUserSelected={handleUserSelected}/>
+              <ChatList users={usersExceptSelf()} concise={sidebar.primarySidebar.collapsed} unread={unreadMessage} onUserSelected={handleUserSelected}/>
             </DrawerSidebar>
             <Content>
               <InsetContainer
