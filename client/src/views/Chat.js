@@ -106,7 +106,7 @@ const Chat = () => {
   const [farEndSignal, setFarEndSignal] = useState();
   const [callingPeer, setCallingPeer] = useState(false);
   const [callAccepted, setCallAccepted] = useState(false);
-  const [connectionAccepted, setConnectionAccepted] = useState(false);
+  const [connectionAccepted, setConnectionAccepted] = useState([]);
   const [callRejected, setCallRejected] = useState(false);
   const [audioMuted, setAudioMuted] = useState(false)
   const [videoMuted, setVideoMuted] = useState(false)
@@ -245,7 +245,7 @@ const Chat = () => {
     })
 
     socket.current.on("connectionAccepted", signal => {
-      setConnectionAccepted(true);
+      setConnectionAccepted(prevConnectedPeers => [...prevConnectedPeers, id])
       peer.signal(signal);
     })
 
@@ -286,7 +286,8 @@ const Chat = () => {
   }
 
   const acceptPeerConnection = (from, peerSignal) => {
-    setConnectionAccepted(true)
+    setConnectionAccepted(prevConnectedPeers => [...prevConnectedPeers, from.email])
+
     if (myPeer.current) {
       myPeer.current.signal(peerSignal);
     } else {
@@ -486,7 +487,7 @@ const Chat = () => {
             <Header className={styles.header}>
               <Toolbar disableGutters>
                 <SidebarTrigger sidebarId='primarySidebar' />
-                {selectedUser && <ConversationHead user={selectedUser} connected={connectionAccepted} onConnect={handleConnect} onVideoCallClick={handleOpenVideoCall}/>}
+                {selectedUser && <ConversationHead user={selectedUser} connected={connectionAccepted.includes(selectedUser.email)} onConnect={handleConnect} onVideoCallClick={handleOpenVideoCall}/>}
               </Toolbar>
             </Header>
             <DrawerSidebar sidebarId={'primarySidebar'}>
