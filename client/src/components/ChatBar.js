@@ -25,13 +25,14 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const ChatBar = ({onSend}) => {
+const ChatBar = ({connected, onSend}) => {
   const styles = useStyles();
   const [message, setMessage] = useState('');
+
   const handleChange = (event) => {
     setMessage(event.target.value)
   }
-  const handleOnClick = (event) => {
+  const handleOnSend = (event) => {
     onSend(event, message)
     setMessage("")
   }
@@ -44,8 +45,8 @@ const ChatBar = ({onSend}) => {
         onChange={handleChange}
         value={message}
       />
-      <IconButton className={styles.iconBtn} onClick={handleOnClick/*(event) => onSend(event, message)*/}>
-        <Send className={styles.icon} />
+      <IconButton className={styles.iconBtn} disabled={!connected} onClick={handleOnSend}>
+        <Send />
       </IconButton>
     </>
   );

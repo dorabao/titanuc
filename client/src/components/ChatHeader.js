@@ -6,8 +6,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
+import MoreHoriz from '@material-ui/icons/MoreHoriz';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const useStyles = makeStyles(() => ({
@@ -38,13 +37,10 @@ const useStyles = makeStyles(() => ({
 
 const ChatHeader = ({onProfileClick}) => {
   const { user } = useAuth0();
-  const [actionClicked, setActionClicked] = useState(false);
-
   const styles = useStyles();
 
   const onActionClick = () => {
     onProfileClick()
-    setActionClicked(!actionClicked)
   }
 
   return (
@@ -63,7 +59,7 @@ const ChatHeader = ({onProfileClick}) => {
     />
     <ListItemSecondaryAction>
       <IconButton edge='end' className={styles.iconBtn} onClick={onActionClick}>
-        {actionClicked ? <ChevronLeft /> : <ChevronRight />}
+        <MoreHoriz/>
       </IconButton>
     </ListItemSecondaryAction>
     </ListItem>

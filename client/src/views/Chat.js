@@ -371,8 +371,12 @@ const Chat = () => {
     setPeerMessages(prevMsgs => [...prevMsgs, {from: user, to: selectedUser, message}])
   }
 
-  const handleProfileClick= () => {
-    setProfileOpened(!profileOpened)
+  const handleProfileClose = () => {
+    setProfileOpened(false)
+  }
+
+  const handleProfileOpen= () => {
+    setProfileOpened(true)
   }
 
   function renderCall() {
@@ -500,13 +504,13 @@ const Chat = () => {
             <DrawerSidebar sidebarId={'primarySidebar'}>
               {sidebar.primarySidebar.collapsed ? (
                 <Box textAlign={'center'} my={1}>
-                  <IconButton className={styles.edit} onClick={handleProfileClick}>
+                  <IconButton className={styles.edit} onClick={handleProfileOpen}>
                     <Edit />
                   </IconButton>
                 </Box>
               ) : (
                 <>
-                  <ChatHeader onProfileClick={handleProfileClick}/>
+                  <ChatHeader onProfileClick={handleProfileOpen}/>
                   <Box p={'4px 16px 12px'}>
                     <Search />
                   </Box>
@@ -526,13 +530,13 @@ const Chat = () => {
                   </InsetSidebar>
                 }
               >
-                {profileOpened && <Profile />}
+                <Profile open={profileOpened} onClose={handleProfileClose}/>
                 {selectedUser && <ChatDialog messages={filteredPeerMessages()} myId={user.email}/>}
               </InsetContainer>
             </Content>
             <InsetFooter ContainerProps={{ disableGutters: true }}>
               <Box display={'flex'} alignItems={'center'} p={1}>
-                {selectedUser && <ChatBar concise={sidebar.primarySidebar.collapsed} onSend={handleOnSend}/>}
+                {selectedUser && <ChatBar concise={sidebar.primarySidebar.collapsed} connected={connectionAccepted} onSend={handleOnSend}/>}
               </Box>
             </InsetFooter>
           </>
