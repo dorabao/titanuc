@@ -1,0 +1,101 @@
+:root{
+  --spacing-unit-micro: 0.3535534rem;
+  --spacing-unit-xmicro: 0.25rem;
+  --spacing-unit: 1.0000001064rem;
+  --lift-shadow: 0 1px 4px rgba(0,0,0,0.1),0 4px 12px rgba(0,0,0,0.06);
+  --rounded-radius: var(--spacing-unit-xmicro);
+  --site-margin: var(--spacing-unit);
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.callContainer{
+  width: 100vw;
+  height: 100vh;
+  z-index: 1300;
+}
+
+.userVideoContainer{
+  max-width: 9rem;
+  max-height: 9rem;
+  height: auto;
+  width: auto;
+  position: absolute;
+  top: var(--spacing-unit-micro);
+  left: var(--spacing-unit-micro);
+  z-index: 1300;
+}
+
+.userVideo{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  box-shadow: var(--lift-shadow);
+}
+
+.partnerVideoContainer{
+  width: 100%;
+  height: 100%;
+  z-index: 1300;
+  background-color: rgba(0,0,0,1);
+}
+
+.partnerVideo{
+  width: 100%;
+  height: 100%;
+}
+
+.partnerVideo.cover{
+  object-fit: cover;
+}
+
+.incomingCallContainer{
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.1);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  transition: display .2s cubic-bezier(.4,0,.2,1);
+}
+
+.incomingCall{
+  height: auto;
+  width: max-content;
+  background-color: #fff;
+  border-radius: calc(var(--rounded-radius)*2);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  box-shadow: var(--lift-shadow);
+  padding: var(--site-margin);
+  justify-content: space-between;
+  animation: callAnimation 2s infinite ease-in-out;
+}
+
+.incomingCallButtons{
+  justify-content: space-between;
+}
+
+.controlsContainer{
+  position: absolute;
+  bottom: 0;
+  align-items: center;
+  justify-content: space-around;
+  height: 4rem;
+  z-index: 1300;
+  width: 100vw;
+}
