@@ -14,6 +14,7 @@ import VolumeUp from '@material-ui/icons/VolumeUp';
 import VideocamOff from '@material-ui/icons/VideocamOff';
 import Videocam from '@material-ui/icons/Videocam';
 import Edit from '@material-ui/icons/Edit';
+import Typography from '@material-ui/core/Typography';
 import {
   makeStyles,
   createMuiTheme,
@@ -36,6 +37,7 @@ import Search from '../components/Search';
 import ChatBar from '../components/ChatBar';
 import ChatList from '../components/ChatList';
 import ChatDialog from '../components/ChatDialog';
+import IncomingCallRinger from '../components/IncomingCallRinger';
 import Profile from '../views/Profile';
 
 const Header = getHeader(styled);
@@ -262,7 +264,6 @@ const Chat = () => {
     if(id !== '' && users[id] && id !== user.email) {
       socket.current.emit("callUser", { userToCall: id, signalData: farEndSignal, from: user.email })
       socket.current.on("callAccepted", () => {
-        console.log("call was accepte by the callee")
         setCallAccepted(true);
       })
 
@@ -317,8 +318,6 @@ const Chat = () => {
   }
 
   const acceptCall = () => {
-    console.log("accept call from: ")
-    console.log(farEnd)
     navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
       setStream(stream);
       setCallAccepted(true);
@@ -400,22 +399,6 @@ const Chat = () => {
       || m.to.email === selectedUser.email)
   }
 
-  let incomingCall;
-  if (receivingCall && !callAccepted && !callRejected) {
-    console.log('receiving Call');
-    incomingCall = (
-      <div className="incomingCallContainer">
-        <div className="incomingCall flex flex-column">
-          <div><span>{farEnd.email}</span> is calling you!</div>
-          <div className="flex">
-          <button name="accept" onClick={acceptCall}>Accept</button>
-          <button name="reject" onClick={rejectCall}>Reject</button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   let UserVideo;
   if (stream) {
     UserVideo = (
@@ -461,9 +444,7 @@ const Chat = () => {
         {({ state: { sidebar } }) => (
           <>
             <CssBaseline />
-            <div>
-              {incomingCall}
-            </div>
+            <IncomingCallRinger open={receivingCall && !callAccepted && !callRejected} caller={farEnd} onAccept={acceptCall} onReject={rejectCall} />
             <div className="callContainer" style={{display: renderCall()}}>
               <div className="callContainer">
                 <div className="partnerVideoContainer">

@@ -82,7 +82,7 @@ export const Profile = ({open, onClose}) => {
                 />
               </Col>
               <Col md>
-                <Typography >{user.name}</Typography >
+                <Typography >{user.name}</Typography>
                 <Typography>{user.email}</Typography>
               </Col>
             </Row>
