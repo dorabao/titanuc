@@ -14,7 +14,6 @@ import VolumeUp from '@material-ui/icons/VolumeUp';
 import VideocamOff from '@material-ui/icons/VideocamOff';
 import Videocam from '@material-ui/icons/Videocam';
 import Edit from '@material-ui/icons/Edit';
-import Typography from '@material-ui/core/Typography';
 import {
   makeStyles,
   createMuiTheme,
@@ -33,7 +32,7 @@ import Layout, {
 } from '@mui-treasury/layout';
 import ConversationHead from '../components/ConversationHeader';
 import ChatHeader from '../components/ChatHeader';
-import Search from '../components/Search';
+// import Search from '../components/Search';
 import ChatBar from '../components/ChatBar';
 import ChatList from '../components/ChatList';
 import ChatDialog from '../components/ChatDialog';
@@ -60,6 +59,7 @@ const useStyles = makeStyles(() => ({
     backgroundColor: '#fff',
   },
   edit: {
+    color: '#fe7070',
     backgroundColor: 'rgba(0,0,0,0.04)',
   },
   controlsContainer: {
@@ -444,7 +444,7 @@ const Chat = () => {
         {({ state: { sidebar } }) => (
           <>
             <CssBaseline />
-            <IncomingCallRinger open={receivingCall && !callAccepted && !callRejected} caller={farEnd} onAccept={acceptCall} onReject={rejectCall} />
+              <IncomingCallRinger open={receivingCall && !callAccepted && !callRejected} caller={farEnd} onAccept={acceptCall} onReject={rejectCall} />
             <div className="callContainer" style={{display: renderCall()}}>
               <div className="callContainer">
                 <div className="partnerVideoContainer">
@@ -481,9 +481,9 @@ const Chat = () => {
               ) : (
                 <>
                   <ChatHeader onProfileClick={handleProfileOpen}/>
-                  <Box p={'4px 16px 12px'}>
+{/*                   <Box p={'4px 16px 12px'}>
                     <Search />
-                  </Box>
+                  </Box> */}
                 </>
               )}
               <ChatList users={usersExceptSelf()} concise={sidebar.primarySidebar.collapsed} unread={unreadMessage} onUserSelected={handleUserSelected}/>

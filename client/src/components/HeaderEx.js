@@ -10,6 +10,7 @@ const styles = () => ({
     fontWeight: 900,
     minWidth: 0,
     fontSize: 18,
+    color: "#CA4246",
   },
   grow: {
     flexGrow: 1,
@@ -21,7 +22,7 @@ const HeaderEx = ({ classes }) => {
 
   return (
   <>
-    <Typography noWrap color={'textSecondary'} className={classes.header}>
+    <Typography noWrap className={classes.header}>
       TitanUC
     </Typography>
     <div className={classes.grow} />

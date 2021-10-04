@@ -8,7 +8,6 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Phone from '@material-ui/icons/Phone';
-import Link from '@material-ui/icons/Link';
 import Videocam from '@material-ui/icons/Videocam';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
   iconBtn: {
     '& svg': {
-      color: 'rgb(0, 153, 255)',
+      color: '#fe7070',
     },
   },
   appBar: {
@@ -38,6 +37,8 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     margin: theme.spacing(1),
+    color: 'white',
+    background: '#fe7070',
   },
 }));
 
@@ -48,21 +49,19 @@ const ConversationHead = ({ user, connected, onConnect, onVideoCallClick }) => {
       <IconButton className={styles.iconBtn} onClick={onVideoCallClick}>
         <Videocam />
       </IconButton>
-      <IconButton className={styles.iconBtn}>
+      <IconButton className={styles.iconBtn} onClick={onVideoCallClick}>
         <Phone />
       </IconButton>
     </ListItemSecondaryAction>
   );
   const connectAction = (
     <ListItemSecondaryAction>
-        <Button
-          variant="contained"
-          color="primary"
-          className={styles.button}
-          startIcon={<Link />}
-          onClick={onConnect}>
-          Connect
-        </Button>
+      <Button
+        variant="contained"
+        className={styles.button}
+        onClick={onConnect}>
+        Connect
+      </Button>
     </ListItemSecondaryAction>
   );
 

@@ -13,6 +13,7 @@ const useStyles = makeStyles(() => ({
   },
   iconBtn: {
     padding: 8,
+    color: '#fe7070',
   },
   input: {
     flex: 'auto',
