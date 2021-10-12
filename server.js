@@ -26,6 +26,7 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
       console.log(`delete user ${userId}`)
       delete users[userId]
+      io.sockets.emit('allUsers', users)
     })
 
     socket.on('addUser', user => {
