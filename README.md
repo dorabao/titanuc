@@ -10,4 +10,4 @@ In addition, WebRTC API is utilized to manage audio/video input devices and capt
 
 The Node Express back end serves the React production bundle. On top of Express, a web socket server keeps track of current online users and exchanges peer signals when peer communication was initiated.
 The simple-peer.js Node module was used for peer to peer communication. This module is based on the Interactive Connectivity Establishment (ICE) protocol for NAT traversal, which is part of WebRTC specification. 
-The application is deployed on Google Cloud, and links a custom domain titanuc.com on GoDaddy.
+The application is deployed on Google Cloud, and links a custom domain https://www.titanuc.com on GoDaddy.
