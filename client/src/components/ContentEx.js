@@ -20,7 +20,7 @@ const styles = ({ breakpoints, transitions }) => ({
     transition: transitions.create(),
     [breakpoints.up('xs')]: {
       margin: '-50, 0, 0, 0',
-      maxWidth: 450,
+      maxWidth: 320,
     },
     [breakpoints.up('sm')]: {
       maxWidth: 700,
